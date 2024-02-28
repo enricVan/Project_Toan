@@ -22,8 +22,8 @@
                             <!-- Top Left -->
                             <div class="top-left">
                                 <ul class="list-main">
-                                    <li><i class="ti-headphone-alt"></i> +060 (800) 801-582</li>
-                                    <li><i class="ti-email"></i> support@shophub.com</li>
+                                    <li>Phạm Khánh Toàn</li>
+                                    <li> HE173035</li>
                                 </ul>
                             </div>
                             <!--/ End Top Left -->
@@ -32,11 +32,7 @@
                             <!-- Top Right -->
                             <div class="right-content">
                                 <ul class="list-main">
-                                    <li><i class="ti-location-pin"></i> Store location</li>
-                                    <li>
-                                        <i class="ti-alarm-clock"></i> <a href="#">Daily deal</a>
-                                    </li>
-                                    <li><i class="ti-user"></i> <a href="#">My account</a></li>
+                                    <li><i class="ti-user"></i> <a href="#">Register</a></li>
                                     <li>
                                         <i class="ti-power-off"></i><a href="login.html#">Login</a>
                                     </li>
