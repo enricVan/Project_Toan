@@ -5,6 +5,7 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -32,10 +33,19 @@
                             <!-- Top Right -->
                             <div class="right-content">
                                 <ul class="list-main">
-                                    <li><i class="ti-user"></i> <a href="#">Register</a></li>
-                                    <li>
-                                        <i class="ti-power-off"></i><a href="login.html#">Login</a>
-                                    </li>
+                                    <c:if test="${sessionScope.user eq null}">
+                                        <li><i class="ti-user"></i> <a href="#">Register</a></li>
+                                        <li>
+                                            <i class="ti-power-off"></i><a href="login">Login</a>
+                                        </li>
+                                    </c:if>
+
+                                    <c:if test="${sessionScope.user ne null}">
+                                        <li>
+                                            <i class="ti-power-off"></i><a href="logout">Logout</a>
+                                        </li>
+                                    </c:if>
+
                                 </ul>
                             </div>
                             <!-- End Top Right -->
@@ -55,47 +65,37 @@
                                       /></a>
                             </div>
                             <!--/ End Logo -->
-                            <!-- Search Form -->
-                            <div class="search-top">
-                                <div class="top-search">
-                                    <a href="#0"><i class="ti-search"></i></a>
-                                </div>
-                                <!-- Search Form -->
-                                <div class="search-top">
-                                    <form class="search-form">
-                                        <input
-                                            type="text"
-                                            placeholder="Search here..."
-                                            name="search"
-                                            />
-                                        <button value="search" type="submit">
-                                            <i class="ti-search"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                                <!--/ End Search Form -->
-                            </div>
+
                             <!--/ End Search Form -->
                             <div class="mobile-nav"></div>
                         </div>
                         <div class="col-lg-8 col-md-7 col-12">
                             <div class="search-bar-top">
                                 <div class="search-bar">
-                                    <select>
+                                    <select onchange="handleFilterBrand(this.value)">
                                         <option selected="selected">All Category</option>
-                                        <option>Gucci</option>
-                                        <option>Louis Vuitton</option>
-                                        <option>Gentle Monster</option>
-                                        <option>Celine</option>
-                                        <option>Chanel</option>
-                                        <option>Chrome Hearts</option>
+                                        <c:forEach items="${requestScope.brands}" var="b">
+                                            <option value="${b.id}">
+                                                ${b.name}
+                                            </option>
+                                        </c:forEach>
                                     </select>
-                                    <form>
+
+                                    <script>
+                                        function handleFilterBrand(brandId) {
+                                            const urlParams = new URLSearchParams(window.location.search);
+
+                                            window.location.href = "customer?service=filter-brand&brand-id=" + brandId;
+                                        }
+                                    </script>
+                                    <form action="customer">
                                         <input
-                                            name="search"
+                                            name="keyword"
                                             placeholder="Search Products Here....."
-                                            type="search"
+                                            type="text"
+                                            value="${requestScope.currentValue}"
                                             />
+                                        <input type="hidden" name="service" value="search"/>
                                         <button class="btnn"><i class="ti-search"></i></button>
                                     </form>
                                 </div>
@@ -145,7 +145,7 @@
                                                     <li>
                                                         <a href="#">Blog</a>
                                                     </li>
-                                                    <li><a href="contact.html">Contact Us</a></li>
+                                                    <li><a href="#">Contact Us</a></li>
                                                 </ul>
                                             </div>
                                         </div>
@@ -160,38 +160,5 @@
             <!--/ End Header Inner -->
         </header>
         <!--/ End Header -->
-
-        <!-- Slider Area -->
-        <section class="hero-slider">
-            <!-- Single Slider -->
-            <div class="single-slider">
-                <div class="container">
-                    <div class="row no-gutters">
-                        <div class="col-lg-9 offset-lg-3 col-12">
-                            <div class="text-inner">
-                                <div class="row">
-                                    <div class="col-lg-7 col-12">
-                                        <div class="hero-text">
-                                            <h1><span>UP TO 50% OFF </span>Shirt For Man</h1>
-                                            <p>
-                                                Maboriosam in a nesciung eget magnae <br />
-                                                dapibus disting tloctio in the find it pereri <br />
-                                                odiy maboriosm.
-                                            </p>
-                                            <div class="button">
-                                                <a href="#" class="btn">Shop Now!</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--/ End Single Slider -->
-        </section>
-        <!--/ End Slider Area -->
-
     </body>
 </html>
