@@ -83,9 +83,12 @@
                                 <div class="search-bar">
                                     <select>
                                         <option selected="selected">All Category</option>
-                                        <option>watch</option>
-                                        <option>mobile</option>
-                                        <option>kid’s item</option>
+                                        <option>Gucci</option>
+                                        <option>Louis Vuitton</option>
+                                        <option>Gentle Monster</option>
+                                        <option>Celine</option>
+                                        <option>Chanel</option>
+                                        <option>Chrome Hearts</option>
                                     </select>
                                     <form>
                                         <input
