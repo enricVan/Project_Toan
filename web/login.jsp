@@ -9,9 +9,10 @@
 <html lang="en" >
     <head>
         <meta charset="UTF-8">
-        <title>HTML5 Login Form with validation Example</title>
+        <title>Login</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
         <link rel="stylesheet" href="./style.css">
+        <link rel="icon" type="image/png" href="images/favicon.png" />
         <style>
             body {
                 background-color: #9f9da7;
@@ -76,7 +77,7 @@
             input[type="text"],
             input[type="email"] {
                 width: 100%;
-                padding: 0 0 0 10px;
+                padding: 1px 2px;
                 margin: 0;
                 color: #8a8b8e;
                 border: 1px solid #c2c0ca;
@@ -187,7 +188,7 @@
                 </p>
             </form>
             <div id="create-account-wrap">
-                <p>Not a member? <a href="#">Create Account</a><p>
+                <p><a href="register.jsp">Create Account</a><p>
             </div><!--create-account-wrap-->
         </div><!--login-form-wrap-->
         <!-- partial -->

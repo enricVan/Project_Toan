@@ -50,15 +50,13 @@
                                                             </a>
                                                             <div class="button-head">
                                                                 <div class="product-action-2">
-                                                                    <a title="Add to cart" href="#">Add to cart</a>
+                                                                    <a href="cart?service=addToCart&productId=${p.id}">Add to cart</a>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                         <div class="product-content">
                                                             <h3>
-                                                                <a 
-                                                                    >${p.name}</a
-                                                                >
+                                                                <a>${p.name}</a>
                                                             </h3>
                                                             <div class="product-price">
                                                                 <span>$${p.price}</span>

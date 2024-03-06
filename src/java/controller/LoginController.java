@@ -45,7 +45,7 @@ public class LoginController extends HttpServlet {
         } else if (user.getRole_id() == 2) {
             session.setAttribute("user", user);
 //            req.getRequestDispatcher("customer").forward(req, resp);
-            resp.sendRedirect("index.jsp");
+            resp.sendRedirect("customer");
         }
     }
     

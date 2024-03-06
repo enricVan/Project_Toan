@@ -1,11 +1,6 @@
-<%-- 
-    Document   : panner
-    Created on : Feb 19, 2024, 10:56:02 AM
-    Author     : Van Minh Tuan
---%>
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page import="model.CartItem, model.Product, java.text.DecimalFormat" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -34,18 +29,18 @@
                             <div class="right-content">
                                 <ul class="list-main">
                                     <c:if test="${sessionScope.user eq null}">
-                                        <li><i class="ti-user"></i> <a href="#">Register</a></li>
-                                        <li>
-                                            <i class="ti-power-off"></i><a href="login">Login</a>
-                                        </li>
-                                    </c:if>
+                                        <li><i class="ti-user"></i><a href="register.jsp">Register</a></li>
+                                        <li><i class="ti-power-off"></i><a href="login">Login</a></li>
+                                            </c:if>
 
                                     <c:if test="${sessionScope.user ne null}">
                                         <li>
+                                            <c:if test="${sessionScope.user ne null}">
+                                                <a class="navbar-brand" href="#!">Welcome ${user.fullname}</a>
+                                            </c:if>
                                             <i class="ti-power-off"></i><a href="logout">Logout</a>
                                         </li>
                                     </c:if>
-
                                 </ul>
                             </div>
                             <!-- End Top Right -->
@@ -57,30 +52,19 @@
             <div class="middle-inner">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-2 col-md-2 col-12">
-                            <!-- Logo -->
-                            <div class="logo">
-                                <a href="index.html"
-                                   ><img src="images/logo.png" alt="logo"
-                                      /></a>
-                            </div>
-                            <!--/ End Logo -->
-
-                            <!--/ End Search Form -->
-                            <div class="mobile-nav"></div>
+                        <div class="col-lg-2 col-md-2 col-12">                           
                         </div>
                         <div class="col-lg-8 col-md-7 col-12">
                             <div class="search-bar-top">
-                                <div class="search-bar">
+                                <div class="search-bar">                                   
                                     <select onchange="handleFilterBrand(this.value)">
-                                        <option selected="selected">All Category</option>
+                                        <option>All Category</option>
                                         <c:forEach items="${requestScope.brands}" var="b">
                                             <option value="${b.id}">
                                                 ${b.name}
                                             </option>
                                         </c:forEach>
                                     </select>
-
                                     <script>
                                         function handleFilterBrand(brandId) {
                                             const urlParams = new URLSearchParams(window.location.search);
@@ -91,7 +75,7 @@
                                     <form action="customer">
                                         <input
                                             name="keyword"
-                                            placeholder="Search Products Here....."
+                                            placeholder="Search by Products name..."
                                             type="text"
                                             value="${requestScope.currentValue}"
                                             />
@@ -104,22 +88,12 @@
                         <div class="col-lg-2 col-md-3 col-12">
                             <div class="right-bar">
                                 <!-- Search Form -->
-                                <div class="sinlge-bar">
-                                    <a href="#" class="single-icon"
-                                       ><i class="fa fa-heart-o" aria-hidden="true"></i
-                                        ></a>
-                                </div>
-                                <div class="sinlge-bar">
-                                    <a href="#" class="single-icon"
-                                       ><i class="fa fa-user-circle-o" aria-hidden="true"></i
-                                        ></a>
-                                </div>
+                                <c:if test="${sessionScope.user ne null}">
                                 <div class="sinlge-bar shopping">
-                                    <a href="#" class="single-icon"
-                                       ><i class="ti-bag"></i>
-                                        <span class="total-count">2</span></a
-                                    >
+                                    <a href="cart.jsp" class="single-icon"><i class="ti-bag"></i>
+                                        <span class="total-count"></span></a>
                                 </div>
+                                </c:if>
                             </div>
                         </div>
                     </div>
@@ -138,14 +112,14 @@
                                         <div class="navbar-collapse">
                                             <div class="nav-inner">
                                                 <ul class="nav main-menu menu navbar-nav">
-                                                    <li class="active"><a href="#">Home</a></li>
-                                                    <li><a href="#">Product</a></li>
-                                                    <li><a href="#">Service</a></li>
-                                                    <li><a href="#">Pages</a></li>
+                                                    <li class="active"><a href="customer">Home</a></li>
+                                                    <li><a href="customer">Product</a></li>
+                                                    <li><a href="customer">Service</a></li>
+                                                    <li><a href="customer">Pages</a></li>
                                                     <li>
-                                                        <a href="#">Blog</a>
+                                                        <a href="customer">Blog</a>
                                                     </li>
-                                                    <li><a href="#">Contact Us</a></li>
+                                                    <li><a href="customer">Contact Us</a></li>
                                                 </ul>
                                             </div>
                                         </div>

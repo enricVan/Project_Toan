@@ -65,7 +65,7 @@ public class UserDAO extends DBContext {
         try {
             if (user.getUsername() != null && !user.getUsername().isEmpty()
                     && user.getPassword() != null && !user.getPassword().isEmpty()
-                    && user.getRole_id() != 0) {
+                    && user.getRole_id() != 1) {
                 stm = connection.prepareStatement(sql);
                 stm.setString(1, user.getUsername());
                 stm.setString(2, user.getPassword());
