@@ -1,27 +1,38 @@
-/*
+ /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package controller;
 
+//import dal.BillDAO;
+//import dal.OrderDAO;
+//import dal.OrderDetailDAO;
+import dal.BillDAO;
+import dal.OrderDAO;
+import dal.OrderDetailDAO;
 import dal.ProductDAO;
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
+import java.sql.Date;
 import java.util.Enumeration;
+import java.util.Vector;
+import model.BillDetail;
 import model.CartItem;
+import model.Order;
 import model.Product;
 import model.User;
 
 /**
  *
- * @author Pham Toan
+ * @author Van Minh Tuan
  */
 public class CartController extends HttpServlet {
-
+    
     private final String CART_URL = "cart.jsp";
 
     @Override
@@ -55,9 +66,24 @@ public class CartController extends HttpServlet {
             }
 
             if (service.equals("removeItem")) {
+                //delete one item 
                 String id = req.getParameter("id");
                 session.removeAttribute(id);
                 resp.sendRedirect(CART_URL);
+                //delete item by quantity - 1
+//             //checkfirst
+//            String id = req.getParameter("id");
+//            CartItem cartItem = (CartItem) session.getAttribute(id);
+//            if (cartItem.getQuantity() == 1) {
+//                session.removeAttribute(id);
+//            } else {//product existProductCart) session.getAttribute(id);
+//                cartItem.setQuantity(cartItem.getQuantity() - 1);
+//                session.setAttribute(id, cartItem);
+//            }
+//            //select view
+//            RequestDispatcher dispth = req.getRequestDispatcher(CART_URL);
+//            //run, show
+//            dispth.forward(req, resp);
 
             }
 
@@ -89,6 +115,51 @@ public class CartController extends HttpServlet {
                 resp.sendRedirect(CART_URL);
 
             }
+
+            if (service.equals("checkOut")) {
+                java.util.Date date = new java.util.Date();
+                Date currentDate = new Date(date.getTime());
+                //insert order
+                Order order = new Order(currentDate, user);
+                int orderId = (new OrderDAO()).insert(order, user);
+                //insert order detail
+                Enumeration em = session.getAttributeNames();
+
+                while (em.hasMoreElements()) {
+                    String id = em.nextElement().toString(); //get key
+
+                    if (!id.equals("user") && !id.equals("fullname") && !id.equals("numberProductsInCart")) {
+                        CartItem cartItem = (CartItem) session.getAttribute(id);
+                        (new OrderDetailDAO()).insert((new OrderDAO()).getOrdersById(orderId), cartItem);
+                    }
+                }
+
+                //insert bill
+                int billId = (new BillDAO()).insert((new OrderDAO()).getOrdersById(orderId), user, "wait");
+
+                //remove all products in cart
+                Enumeration en = session.getAttributeNames();
+                while (en.hasMoreElements()) {
+                    String id = en.nextElement().toString();
+                    if (!id.equals("user") && !id.equals("fullname") && !id.equals("numberProductsInCart")) {
+                        session.removeAttribute(id);
+                    }
+                }
+
+                req.setAttribute("checkOutDone", "checkOutDone");
+                req.setAttribute("BillId", billId);
+                req.getRequestDispatcher(CART_URL).forward(req, resp);
+            }
+
+            if (service.equals("showBill")) {
+                int billId = Integer.parseInt(req.getParameter("billId"));
+
+                Vector<BillDetail> billDetails = (new BillDAO()).showBillDetail(billId);
+                req.setAttribute("billDetails", billDetails);
+                req.setAttribute("showBill", "showBill");
+                req.getRequestDispatcher(CART_URL).forward(req, resp);
+            }
         }
     }
+
 }

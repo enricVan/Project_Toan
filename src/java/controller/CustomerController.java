@@ -53,10 +53,16 @@ public class CustomerController extends HttpServlet {
 
         if (service.equals("filter-brand")) {
             int brandId = Integer.parseInt(req.getParameter("brand-id"));
-            Vector<Product> products = (new ProductDAO()).getProductsByBrand(brandId);
+            Vector<Product> products;
+            if (brandId == 0) {
+                products = (new ProductDAO()).getAll();
+            } else {
+                products = (new ProductDAO()).getProductsByBrand(brandId);
 
+            }
             req.setAttribute("brands", brands);
             req.setAttribute("products", products);
+            req.setAttribute("selectedBrand", brandId);
             req.getRequestDispatcher(MAIN_URL).forward(req, resp);
         }
     }

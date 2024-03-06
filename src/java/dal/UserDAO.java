@@ -17,6 +17,7 @@ import model.User;
  * @author Pham Toan
  */
 public class UserDAO extends DBContext {
+
     public User login(String inputUsername, String inputPassword) {
         PreparedStatement stm = null;
         ResultSet rs = null;
@@ -87,6 +88,91 @@ public class UserDAO extends DBContext {
         }
         return user;
     }
+    
+     public Vector<User> getAllCustomer() {
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        Vector<User> users = new Vector<>();
+        String sql = "select * from [user] where role_id = 2";
+        try {
+            stm = connection.prepareStatement(sql);
+            rs = stm.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String fullname = rs.getString("fullname");
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                int role_id = rs.getInt("role_id");
+                int banned = rs.getInt("banned");
+                
+                User u = new User(id, username, password, fullname, email, phone, address, role_id, banned);
+                users.add(u);
+            }
+            return users;
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                stm.close();
+                rs.close();
+                connection.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDAO.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+     
+     public Vector<User> getCustomerByName(String name) {
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        Vector<User> customers = new Vector<>();
+        String sql = "select * from [user]\n"
+                + "where role_id = 2 and [fullname] LIKE ?";
+        try {
+            stm = connection.prepareStatement(sql);
+            stm.setString(1, "%" + name + "%");
+            rs = stm.executeQuery();
+            
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setPassword(rs.getString("password"));
+                u.setFullname(rs.getString("fullname"));
+                u.setAddress(rs.getString("address"));
+                u.setEmail(rs.getString("email"));
+                u.setPhone(rs.getString("phone"));
+                u.setRole_id(rs.getInt("role_id"));
+                System.out.println(u);
+
+                customers.add(u);
+            }
+            return customers;
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                rs.close();
+                stm.close();
+                connection.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDAO.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+        return null;
+    }
+
 
     public Vector<User> getAllUser() {
         PreparedStatement stm = null;
@@ -114,6 +200,73 @@ public class UserDAO extends DBContext {
         } catch (SQLException ex) {
             Logger.getLogger(UserDAO.class
                     .getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+     public void banAnUser(int userId) {
+        PreparedStatement stm = null;
+
+        String sql = "UPDATE [dbo].[user] SET [banned] = 1 WHERE id = ?";
+        try {
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, userId);
+            stm.executeUpdate();
+
+            System.out.println("Banned userId = " + userId);
+
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                stm.close();
+                connection.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDAO.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+     public User getUserById(int userId) {
+        PreparedStatement stm = null;
+        ResultSet rs = null;
+        String sql = "select * from [user]\n"
+                + "where [id] = ?";
+        try {
+            stm = connection.prepareStatement(sql);
+            stm.setInt(1, userId);
+            rs = stm.executeQuery();
+
+            while (rs.next()) {
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setPassword(rs.getString("password"));
+                u.setFullname(rs.getString("fullname"));
+                u.setAddress(rs.getString("address"));
+                u.setEmail(rs.getString("email"));
+                u.setPhone(rs.getString("phone"));
+                u.setRole_id(rs.getInt("role_id"));
+                System.out.println(u);
+                return u;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(UserDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                rs.close();
+                stm.close();
+                connection.close();
+
+            } catch (SQLException ex) {
+                Logger.getLogger(UserDAO.class
+                        .getName()).log(Level.SEVERE, null, ex);
+            }
         }
         return null;
     }

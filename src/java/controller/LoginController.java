@@ -40,7 +40,7 @@ public class LoginController extends HttpServlet {
         } else if (user.getRole_id() == 1) {
             session.setAttribute("user", user);
 //            req.getRequestDispatcher("indexAdmin.jsp").forward(req, resp);
-            resp.sendRedirect("indexAdmin.jsp");
+            resp.sendRedirect("admin");
 
         } else if (user.getRole_id() == 2) {
             session.setAttribute("user", user);

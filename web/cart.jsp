@@ -58,14 +58,6 @@
         <link rel="stylesheet" href="css/responsive.css" />
     </head>
     <body class="js">
-        <!-- Preloader -->
-        <div class="preloader">
-            <div class="preloader-inner">
-                <div class="preloader-icon">
-                </div>
-            </div>
-        </div>
-        <!-- End Preloader -->
         <!-- Header -->
         <header class="header shop">
             <!-- Topbar -->
@@ -110,128 +102,205 @@
             <div class="container">
                 <div class="row">
                     <div class="col-12">
-                            <ul class="bread-list">
-                                <li>
-                                    <a href="customer">Home<i class="ti-arrow-right"></i></a>
-                                </li>
-                                <li class="active"><a href="cart.jsp">Cart</a></li>
-                            </ul>
+                        <ul class="bread-list">
+                            <li>
+                                <a href="customer">Home<i class="ti-arrow-right"></i></a>
+                            </li>
+                            <li class="active"><a href="cart.jsp">Cart</a></li>
+                        </ul>
                     </div>
                 </div>
             </div>
         </div>
         <!-- End Breadcrumbs -->
 
-        <!-- Shopping Cart -->
-        <div class="shopping-cart section">
-            <div class="container">
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Shopping Summery -->
-                        <table class="table shopping-summery">
-                            <thead>
-                                <tr class="main-hading">
-                                    <th>PRODUCT</th>
-                                    <th>NAME</th>
-                                    <th class="text-center">UNIT PRICE</th>
-                                    <th class="text-center">QUANTITY</th>
-                                    <th class="text-center">TOTAL</th>
-                                    <th class="text-center">
-                                        <i class="ti-trash remove-icon"></i>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
+        <c:if test="${showBill eq null}">
+
+            <!-- Shopping Cart -->
+            <div class="shopping-cart section">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12">
+                            <table class="table shopping-summery">
+                                <thead>
+                                    <tr class="main-hading">
+                                        <th>ID</th>
+                                        <th>Product Name</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>Total</th>
+                                        <th class="text-center">
+                                            <i class="ti-trash remove-icon"></i>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <%
+                                            double total_raw = 0;
+                                            java.util.Enumeration enms = session.getAttributeNames();
+
+                                            while (enms.hasMoreElements()) {
+
+                                                String id = enms.nextElement().toString();
+
+                                                if (!id.equals("user") && !id.equals("fullname") && !id.equals("numberProductsInCart")) {
+                                                    CartItem cartItem = (CartItem) session.getAttribute(id); 
+                                                    Product product = cartItem.getProduct();
+                                                    int quantity = cartItem.getQuantity();
+                                    %>
+                                <form action="cart" id="add-cart">
+                                    <input type="hidden" name="service" value="update"/>
+                                </form>
                                 <tr>
-                                    <td class="image" data-title="No">
-                                        <img src="" alt="#" />
+                                    <td class="image">
+                                        <img src="<%= product.getImage_url()%>" alt="" style="width: 50px" />
+                                        <%= product.getName()%>
                                     </td>
-                                    <td class="product-des" data-title="Description">
-                                        <p class="product-name"><a href="#"></a></p>
-                                        <p class="product-des"><a href=""></a> </p>
+                                    <td class="product-id">
+                                        <%= product.getId()%>
                                     </td>
-                                    <td class="price" data-title="Price">
-                                        <span></span>
+                                    <td class="price">
+                                        <span><%= product.getPrice()%></span>
                                     </td>
-                                    <td class="qty" data-title="Qty">
-                                        <div class="input-group">
-                                            <div class="button minus">
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-primary btn-number"
-                                                    disabled="disabled"
-                                                    data-type="minus"
-                                                    data-field="quant[1]"
-                                                    >
-                                                    <i class="ti-minus"></i>
-                                                </button>
-                                            </div>
+                                    <td class="qty">
+                                        <div class="input-group">   
                                             <input
-                                                type="text"
-                                                name="quant[1]"
+                                                type="number"
+                                                name="p<%= id%>"
                                                 class="input-number"
                                                 data-min="1"
                                                 data-max="100"
-                                                value="1"
+                                                value="<%= quantity%>"
+                                                form="add-cart"
                                                 />
-                                            <div class="button plus">
-                                                <button
-                                                    type="button"
-                                                    class="btn btn-primary btn-number"
-                                                    data-type="plus"
-                                                    data-field="quant[1]"
-                                                    >
-                                                    <i class="ti-plus"></i>
-                                                </button>
-                                            </div>
                                         </div>
-                                        <!--/ End Input Order -->
                                     </td>
-                                    <td class="total-amount" data-title="Total">
-                                        <span>$220.88</span>
+                                    <td class="total-amount">
+                                        <span><%= Math.round((product.getPrice() * quantity) * 10) / 10.0 %></span>
                                     </td>
-                                    <td class="action" data-title="Remove">
-                                        <a href="#"><i class="ti-trash remove-icon"></i></a>
+                                    <td class="action">
+                                        <a href="cart?service=removeItem&id=<%= id%>"><i class="ti-trash remove-icon"></i></a>
                                     </td>
                                 </tr>
-                            </tbody>
-                        </table>
-                        <!--/ End Shopping Summery -->
+                                <%      total_raw += (product.getPrice() * quantity);
+                                        }
+                                    }
+                                DecimalFormat df = new DecimalFormat("#.0");
+                                String total = df.format(total_raw);
+                                %>
+                                </tbody>
+                            </table>
+                            <button class="btn btn-block btn-primary my-3 py-3" 
+                                    style="float: left; width: 15%;"
+                                    onclick="document.getElementById('add-cart').submit();" >
+                                Update
+                            </button>
+                            <a href="cart?service=removeAll">
+                                <button class="btn btn-block btn-primary my-3 py-3"
+                                        style="float: right; width: 15%;" >
+                                    Remove all
+                                </button>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                <div class="row">
-                    <div class="col-12">
-                        <!-- Total Amount -->
-                        <div class="total-amount">
-                            <div class="row">
-                                <div class="col-lg-8 col-md-5 col-12">
-                                    <div class="left"></div>
-                                </div>
-                                <div class="col-lg-4 col-md-7 col-12">
-                                    <div class="right">
-                                        <ul>
-                                            <li>Cart Subtotal<span>$330.00</span></li>
-                                            <li>Shipping<span>Free</span></li>
-                                            <li>You Save<span>$20.00</span></li>
-                                            <li class="last">You Pay<span>$310.00</span></li>
-                                        </ul>
-                                        <div class="button5">
-                                            <a href="#" class="btn">Checkout</a>
-                                            <a href="customer" class="btn">Continue shopping</a>
+                    <div class="row mt-5">
+                        <div class="col-12">
+                            <div class="total-amount">
+                                <div class="row">
+                                    <div class="col-lg-8 col-md-5 col-12">
+                                        <div class="left"></div>
+                                    </div>
+                                    <div class="col-lg-4 col-md-7 col-12">
+                                        <div class="right">
+                                            <ul>
+                                                <li>Cart Subtotal<span>$<%= total%></span></li>
+                                                <li>Shipping<span>Free</span></li>
+                                                <li class="last">You Pay<span>$<%= total%></span></li>
+                                            </ul>
+                                            <div class="button5">
+                                                <a href="cart?service=checkOut" class="btn">Checkout</a>
+                                                <a href="customer" class="btn">Continue shopping</a>
+                                                <c:if test="${checkOutDone ne null}">
+                                                    <div class="card-header bg-secondary border-0 text-center">
+                                                        Checkout Done! See your <a href="cart?service=showBill&billId=${BillId}">Bill? (click here)</a>
+                                                    </div>
+                                                </c:if>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <!--/ End Total Amount -->
                     </div>
                 </div>
             </div>
-        </div>
-        <!--/ End Shopping Cart -->
+            <!--/ End Shopping Cart -->
+        </c:if>
+
+        <!--show bill detail--> 
+        <c:if test="${showBill ne null}">
+
+            <div class="col-lg-8 table-responsive mb-5">
+                <h1 class="font-weight-semi-bold text-uppercase mb-3 text-center">
+                    Your Bill Here!
+                </h1>
+                <table class="table table-bordered text-center mb-0">
+                    <thead class="bg-secondary text-dark">
+                        <tr>
+                            <th>Created Date</th>
+                            <th>Product Name</th>
+                            <th>Quantity</th>
+                            <th>SubTotal</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <c:set var="total" value="0" />
+                        <c:forEach var="billDetail" items="${billDetails}">
+                            <tr>
+                                <td class="align-middle">${billDetail.created_date}</td>
+                                <td class="align-middle">
+                                    <img src="${billDetail.image_url}" alt="" style="width: 50px" />
+                                    ${billDetail.productName}
+                                </td>
+                                <td class="align-middle">${billDetail.productQuantity}</td>
+                                <td class="align-middle">${Math.round(billDetail.subTotal)*1.0}</td>
+                            </tr>
+                            <c:set var="subtotal" value="${billDetail.subTotal}" />
+                            <c:set var="total" value="${total + subtotal}" />
+                        </c:forEach>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3 pt-1">
+                            <h6 class="font-weight-medium">Subtotal</h6>
+                            <h6 class="font-weight-medium">$${Math.round(total)*1.0}</h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Shipping</h6>
+                            <h6 class="font-weight-medium">$0</h6>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-bold">Total</h5>
+                            <h5 class="font-weight-bold">$${Math.round(total)*1.0}</h5>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </c:if>
 
         <!-- Start Shop Services Area  -->
-        <section class="shop-services section">
+        <section class="shop-services section mt-5">
             <div class="container">
                 <div class="row">
                     <div class="col-lg-3 col-md-6 col-12">
@@ -275,6 +344,8 @@
         </section>
         <!-- End Shop Newsletter -->
 
+
+
         <!-- Start Shop Newsletter  -->
         <section class="shop-newsletter section">
             <div class="container">
@@ -301,7 +372,7 @@
                                 <div class="left">
                                     <p>
                                         Copyright © 2024 - All Rights Reserved.
-                                        
+
                                     </p>
                                     <p>
                                         Designed by Pham Khanh Toan - HE173035

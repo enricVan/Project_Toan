@@ -58,9 +58,13 @@
                             <div class="search-bar-top">
                                 <div class="search-bar">                                   
                                     <select onchange="handleFilterBrand(this.value)">
-                                        <option>All Category</option>
+                                        <option value="0" 
+                                                <c:if test="${selectedBrand == 0}">selected</c:if>
+                                                    >All Category</option>
                                         <c:forEach items="${requestScope.brands}" var="b">
-                                            <option value="${b.id}">
+                                            <c:set var="currentBrandId" value="${b.id}"/>
+                                            <option value="${b.id}"
+                                                    <c:if test="${selectedBrand == currentBrandId}">selected</c:if>>
                                                 ${b.name}
                                             </option>
                                         </c:forEach>
@@ -89,10 +93,35 @@
                             <div class="right-bar">
                                 <!-- Search Form -->
                                 <c:if test="${sessionScope.user ne null}">
-                                <div class="sinlge-bar shopping">
-                                    <a href="cart.jsp" class="single-icon"><i class="ti-bag"></i>
-                                        <span class="total-count"></span></a>
-                                </div>
+                                    <div class="sinlge-bar shopping">
+                                        <a href="cart.jsp" class="single-icon">
+                                            <i class="ti-bag">
+                                            </i>
+                                            <span class="total-count">
+                                                <%
+                                                int numberProductsInCart = 0;
+                                                java.util.Enumeration ens = session.getAttributeNames();
+
+                                                        while (ens.hasMoreElements()) {
+
+                                                                String id = ens.nextElement().toString();
+
+                                                                if (!id.equals("user") && !id.equals("fullname") && !id.equals("numberProductsInCart")) {
+                                                                    //numberProductsInCart++;
+
+                                                                    CartItem cartItem = (CartItem) session.getAttribute(id); 
+                                                                    Product product = cartItem.getProduct();
+                                                                    int quantity = cartItem.getQuantity();
+                                                                    numberProductsInCart += quantity;
+
+                                                    }
+                                                }
+                                                session.setAttribute("numberProductsInCart", numberProductsInCart);
+                                                %>
+
+                                                ${sessionScope.numberProductsInCart} 
+                                            </span></a>
+                                    </div>
                                 </c:if>
                             </div>
                         </div>
